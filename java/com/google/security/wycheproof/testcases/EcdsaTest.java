@@ -16,6 +16,7 @@ package com.google.security.wycheproof;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.security.wycheproof.WycheproofRunner.ExcludedTest;
 import com.google.security.wycheproof.WycheproofRunner.ProviderType;
 import com.google.security.wycheproof.WycheproofRunner.SlowTest;
 import java.lang.management.ManagementFactory;
@@ -121,6 +122,54 @@ public class EcdsaTest {
     return Math.sqrt((sumReal * sumReal + sumImag * sumImag) / samples.length);
   }
 
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+  @Test
+  public void testValidSignatures() throws Exception {
+    testVectors(
+        VALID_SIGNATURES,
+        publicKey1(),
+        "Hello",
+        "SHA256WithECDSA",
+        "Valid ECDSA signature",
+        true,
+        true);
+  }
+
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+ @Test
+  public void testModifiedSignatures() throws Exception {
+    testVectors(
+        MODIFIED_SIGNATURES,
+        publicKey1(),
+        "Hello",
+        "SHA256WithECDSA",
+        "Modified ECDSA signature",
+        false,
+        true);
+  }
+
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+  @Test
+  public void testInvalidSignatures() throws Exception {
+    testVectors(
+        INVALID_SIGNATURES,
+        publicKey1(),
+        "Hello",
+        "SHA256WithECDSA",
+        "Invalid ECDSA signature",
+        false,
+        false);
+  }
+
   /**
    * This test checks the basic functionality of ECDSA. It simply tries to generate a key, sign and
    * verify a message for a given, algorithm and curve.
@@ -130,6 +179,12 @@ public class EcdsaTest {
    * @return whether the algorithm and curve are supported.
    * @throws Exception if an unexpected error occurred.
    */
+
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+  @Test
   boolean testParameters(String algorithm, String curve) throws Exception {
     String message = "123400";
 
@@ -282,7 +337,8 @@ public class EcdsaTest {
       ProviderType.BOUNCY_CASTLE,
       ProviderType.CONSCRYPT,
       ProviderType.OPENJDK,
-      ProviderType.SPONGY_CASTLE
+      ProviderType.SPONGY_CASTLE,
+      ProviderType.WOLFCRYPT
     }
   )
   @Test
@@ -400,7 +456,8 @@ public class EcdsaTest {
       ProviderType.BOUNCY_CASTLE,
       ProviderType.CONSCRYPT,
       ProviderType.OPENJDK,
-      ProviderType.SPONGY_CASTLE
+      ProviderType.SPONGY_CASTLE,
+      ProviderType.WOLFCRYPT
     }
   )
   @Test

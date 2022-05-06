@@ -18,6 +18,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.security.wycheproof.WycheproofRunner.NoPresubmitTest;
+import com.google.security.wycheproof.WycheproofRunner.ExcludedTest;
+import com.google.security.wycheproof.WycheproofRunner.NoPresubmitTest;
 import com.google.security.wycheproof.WycheproofRunner.ProviderType;
 import com.google.security.wycheproof.WycheproofRunner.SlowTest;
 import java.lang.management.ManagementFactory;
@@ -507,6 +509,11 @@ public static final EcPublicKeyTestVector EC_VALID_PUBLIC_KEY =
   };
 
   /** Checks that key agreement using ECDH works. */
+
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
   @Test
   public void testBasic() throws Exception {
     KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
@@ -530,14 +537,38 @@ public static final EcPublicKeyTestVector EC_VALID_PUBLIC_KEY =
     providers = {ProviderType.BOUNCY_CASTLE},
     bugs = {"BouncyCastle uses long encoding. Is this a bug?"}
   )
+
   @Test
+  public void testVectors() throws Exception {
+    KeyAgreement ka = KeyAgreement.getInstance("ECDH");
+    for (EcdhTestVector t : ECDH_TEST_VECTORS) {
+      try {
+        ka.init(t.getPrivateKey());
+        ka.doPhase(t.getPublicKey(), true);
+        byte[] shared = ka.generateSecret();
+        assertEquals("Curve:" + t.curvename, TestUtil.bytesToHex(shared), t.shared);
+      } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException ex) {
+        // Skipped, because the provider does not support the curve.
+      }
+    }
+  }
+
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+ @Test
   public void testEncode() throws Exception {
     KeyFactory kf = KeyFactory.getInstance("EC");
     ECPublicKey valid = (ECPublicKey) kf.generatePublic(EC_VALID_PUBLIC_KEY.getSpec());
     assertEquals(TestUtil.bytesToHex(valid.getEncoded()), EC_VALID_PUBLIC_KEY.encoded);
   }
 
-  @Test
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+ @Test
   public void testDecode() throws Exception {
     KeyFactory kf = KeyFactory.getInstance("EC");
     ECPublicKey key1 = (ECPublicKey) kf.generatePublic(EC_VALID_PUBLIC_KEY.getSpec());

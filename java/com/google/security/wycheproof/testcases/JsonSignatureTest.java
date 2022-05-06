@@ -547,15 +547,25 @@ public class JsonSignatureTest {
     }
   }
 
+
   @Test
   public void testEcdsa() throws Exception {
     testVerification("ecdsa_test.json", "ECDSA", Format.ASN, true);
   }
 
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
   @Test
   public void testSecp224r1Sha224() throws Exception {
     testVerification("ecdsa_secp224r1_sha224_test.json", "ECDSA", Format.ASN, false);
   }
+
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
 
   @Test
   public void testSecp224r1Sha256() throws Exception {
@@ -566,6 +576,10 @@ public class JsonSignatureTest {
   public void testSecp224r1Sha512() throws Exception {
     testVerification("ecdsa_secp224r1_sha512_test.json", "ECDSA", Format.ASN, false);
   }
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
 
   @Test
   public void testSecp256r1Sha256() throws Exception {
@@ -576,21 +590,39 @@ public class JsonSignatureTest {
   public void testSecp256r1Sha512() throws Exception {
     testVerification("ecdsa_secp256r1_sha512_test.json", "ECDSA", Format.ASN, false);
   }
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
 
   @Test
   public void testSecp384r1Sha384() throws Exception {
     testVerification("ecdsa_secp384r1_sha384_test.json", "ECDSA", Format.ASN, false);
   }
 
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+
   @Test
   public void testSecp384r1Sha512() throws Exception {
     testVerification("ecdsa_secp384r1_sha512_test.json", "ECDSA", Format.ASN, false);
   }
 
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
+
+
   @Test
   public void testSecp521r1Sha512() throws Exception {
     testVerification("ecdsa_secp521r1_sha512_test.json", "ECDSA", Format.ASN, false);
   }
+
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support EC KeyFactory.")
 
   // Testing curves that may not be supported by a provider.
   @Test
@@ -947,8 +979,9 @@ public class JsonSignatureTest {
   }
 
   @ExcludedTest(
-    providers = {ProviderType.CONSCRYPT},
-    comment = "Conscrypt does not support DSA.")
+    providers = {ProviderType.CONSCRYPT, ProviderType.WOLFCRYPT},
+    comment = "Conscrypt and wolfCrypt does not support DSA.")
+
   @Test
   public void testDsa2048Sha256inP1363Format() throws Exception {
     testVerification("dsa_2048_256_sha256_p1363_test.json", "DSA", Format.P1363, true);

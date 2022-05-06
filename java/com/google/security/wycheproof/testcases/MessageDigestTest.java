@@ -16,6 +16,7 @@ package com.google.security.wycheproof;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.google.security.wycheproof.WycheproofRunner.ExcludedTest;
 import com.google.security.wycheproof.WycheproofRunner.ProviderType;
 import com.google.security.wycheproof.WycheproofRunner.SlowTest;
 import java.nio.ByteBuffer;
@@ -23,6 +24,7 @@ import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+
 import java.util.Arrays;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -214,6 +216,10 @@ public class MessageDigestTest {
     testMessageDigest("SHA-1");
   }
 
+  @ExcludedTest(
+    providers = {ProviderType.WOLFCRYPT},
+    comment = "wolfCrypt does not support SHA-224.")
+
   @Test
   public void testSha224() throws Exception {
     testMessageDigest("SHA-224");
@@ -316,7 +322,8 @@ public class MessageDigestTest {
   }
 
   @SlowTest(
-    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE, ProviderType.SPONGY_CASTLE}
+    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE,
+       ProviderType.SPONGY_CASTLE, ProviderType.WOLFCRYPT}
   )
   @Test
   public void testLongMessageMd5() throws Exception {
@@ -325,7 +332,8 @@ public class MessageDigestTest {
   }
 
   @SlowTest(
-    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE, ProviderType.SPONGY_CASTLE}
+    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE,
+        ProviderType.SPONGY_CASTLE, ProviderType.WOLFCRYPT}
   )
   @Test
   public void testLongMessageSha1() throws Exception {
@@ -334,7 +342,8 @@ public class MessageDigestTest {
   }
 
   @SlowTest(
-    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE, ProviderType.SPONGY_CASTLE}
+    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE,
+        ProviderType.SPONGY_CASTLE, ProviderType.WOLFCRYPT}
   )
   @Test
   public void testLongMessageSha256() throws Exception {
@@ -351,8 +360,13 @@ public class MessageDigestTest {
   }
 
   @SlowTest(
-    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE, ProviderType.SPONGY_CASTLE}
+    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE,
+        ProviderType.SPONGY_CASTLE}
   )
+  @ExcludedTest(
+  providers = {ProviderType.WOLFCRYPT},
+  comment = "wolfCrypt does not support SHA-224.")
+
   @Test
   public void testLongMessageSha224() throws Exception {
     testLongMessage(
@@ -362,8 +376,10 @@ public class MessageDigestTest {
   }
 
   @SlowTest(
-    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE, ProviderType.SPONGY_CASTLE}
+    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE,
+        ProviderType.SPONGY_CASTLE, ProviderType.WOLFCRYPT}
   )
+
   @Test
   public void testLongMessageSha384() throws Exception {
     testLongMessage(
@@ -381,7 +397,8 @@ public class MessageDigestTest {
   }
 
   @SlowTest(
-    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE, ProviderType.SPONGY_CASTLE}
+    providers = {ProviderType.OPENJDK, ProviderType.BOUNCY_CASTLE,
+        ProviderType.SPONGY_CASTLE, ProviderType.WOLFCRYPT}
   )
   @Test
   public void testLongMessageSha512() throws Exception {

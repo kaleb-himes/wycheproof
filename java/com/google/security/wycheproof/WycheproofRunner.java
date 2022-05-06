@@ -50,6 +50,7 @@ public class WycheproofRunner extends Suite {
     CONSCRYPT,
     OPENJDK,
     SPONGY_CASTLE,
+    WOLFCRYPT,
     AMAZON_CORRETTO_CRYPTO_PROVIDER
   }
 
