@@ -1,4 +1,6 @@
 # javascript
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
 http_archive(
     name = "io_bazel_rules_closure",
     strip_prefix = "rules_closure-f4d0633f14570313b94822223039ebda0f398102",
